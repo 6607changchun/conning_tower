@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../generated/l10n.dart';
 
@@ -110,7 +109,10 @@ class AboutPage extends StatelessWidget {
                     SizedBox(
                       height: 30,
                       child:
-                          Text(S.of(context).AboutContributors, style: TextStyle(fontSize: 24)),
+                          Center(child: Text(S.of(context).AboutContributors, style: TextStyle(fontSize: 24))),
+                    ),
+                    const SizedBox(
+                      height: 30,
                     ),
                   ],
                 ),
@@ -122,130 +124,18 @@ class AboutPage extends StatelessWidget {
                 delegate: SliverChildListDelegate(
                   [
                     Container(
-                      height: 80,
-                      child: Card(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ListTile(
-                              leading: FadeInImage(
-                                  height: 50,
-                                  width: 50,
-                                  fadeInDuration:
-                                      const Duration(milliseconds: 500),
-                                  fadeInCurve: Curves.easeInExpo,
-                                  fadeOutCurve: Curves.easeOutExpo,
-                                  placeholder: const AssetImage(
-                                      "assets/images/defaultAvatarImage.png"),
-                                  image: const NetworkImage(
-                                      'https://avatars.githubusercontent.com/u/24852023?v=4'),
-                                  imageErrorBuilder:
-                                      (context, error, stackTrace) {
-                                    return Container(
-                                        child: Image.asset(
-                                            "assets/images/defaultAvatarImage.png"));
-                                  },
-                                  fit: BoxFit.cover),
-                              title: const Text('Andy Chu'),
-                              subtitle: InkWell(
-                                onTap: () => launchUrl(
-                                    Uri.parse('https://github.com/andychucs/')),
-                                child: const Text(
-                                  '@andychucs',
-                                  style: TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      color: CupertinoColors.link),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 80,
-                      child: Card(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ListTile(
-                              leading: FadeInImage(
-                                  height: 50,
-                                  width: 50,
-                                  fadeInDuration:
-                                      const Duration(milliseconds: 500),
-                                  fadeInCurve: Curves.easeInExpo,
-                                  fadeOutCurve: Curves.easeOutExpo,
-                                  placeholder: const AssetImage(
-                                      "assets/images/defaultAvatarImage.png"),
-                                  image: const NetworkImage(
-                                      'https://avatars.githubusercontent.com/u/91370281?v=4'),
-                                  imageErrorBuilder:
-                                      (context, error, stackTrace) {
-                                    return Container(
-                                        child: Image.asset(
-                                            "assets/images/defaultAvatarImage.png"));
-                                  },
-                                  fit: BoxFit.cover),
-                              title: const Text('Angus'),
-                              subtitle: InkWell(
-                                onTap: () => launchUrl(Uri.parse(
-                                    'https://github.com/anguslaw63631')),
-                                child: const Text(
-                                  '@anguslaw63631',
-                                  style: TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      color: CupertinoColors.link),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 80,
-                      child: Card(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ListTile(
-                              leading: FadeInImage(
-                                  height: 50,
-                                  width: 50,
-                                  fadeInDuration:
-                                      const Duration(milliseconds: 500),
-                                  fadeInCurve: Curves.easeInExpo,
-                                  fadeOutCurve: Curves.easeOutExpo,
-                                  placeholder: const AssetImage(
-                                      "assets/images/defaultAvatarImage.png"),
-                                  image: const NetworkImage(
-                                      'https://avatars.githubusercontent.com/u/59718878?v=4'),
-                                  imageErrorBuilder:
-                                      (context, error, stackTrace) {
-                                    return Container(
-                                        child: Image.asset(
-                                            "assets/images/defaultAvatarImage.png"));
-                                  },
-                                  fit: BoxFit.cover),
-                              title: const Text('lovetwice1012'),
-                              subtitle: InkWell(
-                                onTap: () => launchUrl(Uri.parse(
-                                    'https://github.com/lovetwice1012')),
-                                child: const Text(
-                                  '@lovetwice1012',
-                                  style: TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      color: CupertinoColors.link),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
                       height: 100,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: const [
+                          Text('AndyChu'),
+                          Text('Angus'),
+                          Text('lovetwice1012'),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30,
                     ),
                   ],
                 ),
