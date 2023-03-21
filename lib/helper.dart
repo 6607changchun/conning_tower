@@ -7,13 +7,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:validators/validators.dart';
 
 import 'constants.dart';
 import 'generated/l10n.dart';
 
 
 Future<bool> autoAdjustWindowV2(
-  InAppWebViewController controller,{bool force = false})
+  InAppWebViewController controller,{bool force = false}
 ) async {
   //Adjust Kancolle window
   if ((inKancolleWindow && !autoAdjusted && enableAutoProcess) ||

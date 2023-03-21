@@ -86,7 +86,7 @@ class Controls extends StatelessWidget {
               selectedItemColor: Theme.of(context).primaryColor,
               onTap: ((value) async {
                 HapticFeedback.mediumImpact();
-                _onTap(controller!, value, context);
+                _onTap(value, context,controller!);
               }),
               items: [
                 BottomNavigationBarItem(
@@ -137,7 +137,7 @@ class Controls extends StatelessWidget {
             groupAlignment: 0,
             onDestinationSelected: (int index) async {
               HapticFeedback.mediumImpact();
-              _onTap(controller!, index, context);
+              _onTap(index, context,controller!);
             },
             destinations: [
               NavigationRailDestination(
@@ -189,7 +189,7 @@ class Controls extends StatelessWidget {
         });
   }
 
-  void _onTap(WebViewController controller, int value, BuildContext context) {
+  void _onTap(int value, BuildContext context,InAppWebViewController controller) {
     var func = funcMap[value];
     switch (func) {
       case ConFunc.navi2About:

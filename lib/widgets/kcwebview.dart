@@ -25,7 +25,25 @@ class KCWebView extends StatefulWidget {
 }
 
 class KCWebViewState extends State<KCWebView> {
+  // late String defaultUA;
   final GlobalKey webViewKey = GlobalKey();
+
+  static get defaultUA {
+    if (Platform.isAndroid) {
+      return kChromeUA;
+    } else if (Platform.isIOS) {
+      return kSafariUA;
+    }
+  }
+
+  @override
+  void initState() {
+    beforeRedirect = false;
+    super.initState();
+  }
+
+
+
   InAppWebViewSettings webViewSetting = InAppWebViewSettings(
     javaScriptEnabled: true,
     userAgent: customUA.isNotEmpty ? customUA : defaultUA,
@@ -44,7 +62,7 @@ class KCWebViewState extends State<KCWebView> {
       key: webViewKey,
       initialSettings: webViewSetting,
       initialUrlRequest: URLRequest(
-          url: WebUri.uri(homeUrl)),
+          url: WebUri(homeUrl)),
       onWebViewCreated: (InAppWebViewController controller) {
         widget.webViewController.complete(controller);
 
@@ -60,9 +78,9 @@ class KCWebViewState extends State<KCWebView> {
       },
       onLoadStart: (controller,uri){
         print('Page started loading: $uri');
-        // var uri = Uri.parse(url);
+        // var uri = Uri.parse(uri);
         beforeRedirect = false;
-        if (uri.path.startsWith(
+        if (uri!.path.startsWith(
             '/netgame/social/-/gadgets/=/app_id=854854')) {
           beforeRedirect = true;
           inKancolleWindow = false;
@@ -85,7 +103,25 @@ class KCWebViewState extends State<KCWebView> {
                 msg: S.of(context).KCViewFuncMsgNaviGameLoadCompleted);
             HapticFeedback.mediumImpact();
             if(enableAutoScale){
-              autoAdjustWindowV2(controller);
+              autoAdjustWindowV2(controller).whenComplete(() => (){
+                controller.evaluateJavascript(source: """
+                console.log("Msg Start - script is running.");
+                var origOpen = XMLHttpRequest.prototype.open;
+                XMLHttpRequest.prototype.open = function() {
+                    this.addEventListener('load', function() {
+                        if (this.responseURL.includes('/kcsapi/')) {
+                            console.log("Msg URL - " + this.responseURL);
+                            KcapiToFlutter(this);
+                        }
+                    });
+                    origOpen.apply(this, arguments);
+                };
+                
+                function KcapiToFlutter(data) {
+                    console.log("Msg Data - " + data.responseText);
+                }
+                """, contentWorld: ContentWorld.world(name: "flashWrap"));
+              });
             }
           }
         }else if (Platform.isAndroid) {
@@ -118,6 +154,9 @@ class KCWebViewState extends State<KCWebView> {
           return customResponse;
         }
         return null;
+      },
+      onConsoleMessage: (controller, consoleMessage){
+        debugPrint(consoleMessage.message);
       },
     ),);
   }

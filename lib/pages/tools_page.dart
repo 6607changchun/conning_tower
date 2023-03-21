@@ -86,7 +86,7 @@ class _ToolsPageState extends State<ToolsPage> {
               msg: S.current.AppClearCookie, isNormal: true);
         });
     if (value ?? false) {
-      await cookieManager.deleteAllCookies();
+      await widget.cookieManager.deleteAllCookies();
       String message = S.current.AppLeftSideControlsLogoutSuccess;
       Fluttertoast.showToast(msg: message);
     }
@@ -111,16 +111,16 @@ class _ToolsPageState extends State<ToolsPage> {
     Fluttertoast.showToast(msg: S.current.MsgUnmuteGame);
   }
 
-  Future<void> _onHomeSave(WebViewController controller) async {
-    final String? curUrl = await controller.currentUrl();
+  Future<void> _onHomeSave(InAppWebViewController controller) async {
+    String? curUrl = controller.getUrl().toString();
     if (isURL(curUrl)) {
       final prefs = await SharedPreferences.getInstance();
       if (curUrl == customHomeUrl) {
         prefs.setString('customHomeUrl', '');
       } else {
-        prefs.setString('customHomeUrl', curUrl!);
+        prefs.setString('customHomeUrl', curUrl);
       }
-      prefs.setString('customHomeBase64Url', curUrl!);
+      prefs.setString('customHomeBase64Url', curUrl);
       customHomeBase64Url = curUrl;
       widget.reloadConfig();
     }
