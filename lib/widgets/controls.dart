@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
+import '../constants.dart';
 import '../generated/l10n.dart';
 import '../helper.dart';
 import '../pages/home.dart';
@@ -28,30 +29,33 @@ enum ConFunc {
   navi2About,
   navi2Tool,
   navi2Settings,
+  navi2GameInfo
 }
 
 class Controls extends StatelessWidget {
-  Controls(this._webViewControllerFuture, CookieManager? cookieManager,
+  Controls(
+      this._webViewControllerFuture, CookieManager? cookieManager,
       {Key? key, required this.notifyParent, required this.orientation})
-      : cookieManager = cookieManager ?? CookieManager(),
+      : cookieManager = cookieManager ?? CookieManager.instance(),
         super(key: key);
   final Function() notifyParent;
-  final Future<WebViewController> _webViewControllerFuture;
+  final Future<InAppWebViewController> _webViewControllerFuture;
   late final CookieManager cookieManager;
   final Orientation orientation;
 
   final Map funcMap = {
     0: ConFunc.loadHome,
     // 1: ConFunc.httpRedirect,
-    1: ConFunc.navi2Tool,
+    1: ConFunc.navi2GameInfo,
+    2: ConFunc.navi2Tool,
     // 2: ConFunc.bottomUp,
-    2: ConFunc.refresh,
+    3: ConFunc.refresh,
     // 4: ConFunc.scrollUp,
     // 5: ConFunc.scrollDown,
-    3: ConFunc.goBack,
-    4: ConFunc.goForward,
-    5: ConFunc.navi2Settings,
-    6: ConFunc.navi2About,
+    4: ConFunc.goBack,
+    5: ConFunc.goForward,
+    6: ConFunc.navi2Settings,
+    7: ConFunc.navi2About,
     // 1: ConFunc.adjustWindow,
     // 8: ConFunc.clearCookies,
     // 9: ConFunc.clearCache
@@ -59,9 +63,10 @@ class Controls extends StatelessWidget {
 
   final Map naviItems = {
     0: 0, //loadHome
-    1: 1, //navi2Tool
-    2: 5, //navi2Settings
-    3: 6, //navi2About
+    1: 2, //navi2Tool
+    2: 6, //navi2Settings
+    3: 7, //navi2About
+    4: 1, //navi2GameInfo
   };
 
   @override
@@ -69,9 +74,10 @@ class Controls extends StatelessWidget {
     return FutureBuilder(
         future: _webViewControllerFuture,
         builder:
-            (BuildContext context, AsyncSnapshot<WebViewController> snapshot) {
-          final WebViewController? controller = snapshot.data;
-          if (orientation == Orientation.portrait) {
+            (BuildContext context, AsyncSnapshot<InAppWebViewController> snapshot) {
+            final bool webViewReady = snapshot.connectionState == ConnectionState.done;
+            final InAppWebViewController? controller = snapshot.data;
+            if (orientation == Orientation.portrait) {
             return BottomNavigationBar(
               showSelectedLabels: true,
               // showUnselectedLabels: true,
@@ -88,7 +94,11 @@ class Controls extends StatelessWidget {
                   label: S.of(context).AppHome,
                 ),
                 BottomNavigationBarItem(
-                  icon: const Icon(CupertinoIcons.game_controller),
+                  icon: const Icon(CupertinoIcons.graph_square),
+                label: "GameInfo",
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(CupertinoIcons.game_controller),
                   label: S.of(context).ToolsButton,
                 ),
                 BottomNavigationBarItem(
@@ -135,6 +145,10 @@ class Controls extends StatelessWidget {
                 label: Text(
                   S.of(context).AppHome,
                 ),
+            ),
+            NavigationRailDestination(
+              icon: const Icon(CupertinoIcons.graph_square),
+              label: Text("GameInfo"),
               ),
               NavigationRailDestination(
                 icon: const Icon(CupertinoIcons.game_controller),
@@ -190,6 +204,10 @@ class Controls extends StatelessWidget {
         selectedIndex = 2;
         notifyParent();
         break;
+      case ConFunc.navi2GameInfo:
+        selectedIndex = 4;
+        notifyParent();
+        break;
       case ConFunc.loadHome:
         if (selectedIndex != 0) {
           selectedIndex = 0;
@@ -208,10 +226,10 @@ class Controls extends StatelessWidget {
         _onBottomUp();
         break;
       case ConFunc.scrollUp:
-        controller.scrollBy(0, -1);
+        controller.scrollBy(x: 1, y: 0);
         break;
       case ConFunc.scrollDown:
-        controller.scrollBy(0, 1);
+        controller.scrollBy(x: 0, y: 1);
         break;
       case ConFunc.goBack:
         _onGoBack(controller);
@@ -231,27 +249,24 @@ class Controls extends StatelessWidget {
     }
   }
 
-  Future<void> _onRefresh(
-      BuildContext context, WebViewController controller) async {
-    bool? value = await showDialog(
-        context: context,
-        builder: (context) {
-          return CustomAlertDialog(msg: S.current.AppRefresh, isNormal: true);
-        });
+  Future<void> _onRefresh(BuildContext context, InAppWebViewController controller) async {
+    bool? value = await showDialog(context: context, builder: (context){
+      return CustomAlertDialog(msg: S.current.AppRefresh,isNormal: true);
+    });
     if (value ?? false) {
       allowNavi = true;
       await controller.reload();
     }
   }
 
-  Future<void> _onGoBack(WebViewController controller) async {
+  Future<void> _onGoBack(InAppWebViewController controller) async {
     allowNavi = true;
     if (await controller.canGoBack()) {
       await controller.goBack();
     }
   }
 
-  Future<void> _onGoForward(WebViewController controller) async {
+  Future<void> _onGoForward(InAppWebViewController controller) async {
     allowNavi = true;
     if (await controller.canGoForward()) {
       await controller.goForward();
@@ -267,17 +282,15 @@ class Controls extends StatelessWidget {
     notifyParent();
   }
 
-  Future<void> _onHttpRedirect(WebViewController controller) async {
+  Future<void> _onHttpRedirect(InAppWebViewController controller) async {
     if (!inKancolleWindow) {
-      String? currentUrl = await controller.currentUrl();
+      String? currentUrl = await controller.getUrl().toString();
       Uri uri = Uri.parse(currentUrl!);
       if (uri.path.startsWith(home.path)) {
         // May be HTTPS or HTTP
         allowNavi = true;
-        if (Platform.isIOS) {
-          await controller.runJavascript(
-              '''window.open("http:"+gadgetInfo.URL,'_blank');''');
-        }
+        await controller
+            .injectJavascriptFileFromAsset(assetFilePath: httpRedirectJS);
         inKancolleWindow = true;
       }
       Fluttertoast.showToast(msg: S.current.KCViewFuncMsgAutoGameRedirect);
@@ -289,7 +302,7 @@ class Controls extends StatelessWidget {
     print("inKancolleWindow: $inKancolleWindow");
   }
 
-  Future<void> _onAdjustWindow(WebViewController controller) async {
+  Future<void> _onAdjustWindow(InAppWebViewController controller) async {
     if (gameLoadCompleted) {
       await autoAdjustWindowV2(controller, force: true);
     } else {
@@ -298,46 +311,32 @@ class Controls extends StatelessWidget {
     }
   }
 
-  Future<void> _onLoadHome(
-      BuildContext context, WebViewController controller) async {
-    bool? value = await showDialog(
-        context: context,
-        builder: (context) {
-          return CustomAlertDialog(msg: S.current.AppHome, isNormal: true);
-        });
+  Future<void> _onLoadHome(BuildContext context, InAppWebViewController controller) async {
+    bool? value = await showDialog(context: context, builder: (context){
+      return CustomAlertDialog(msg: S.current.AppHome,isNormal: true);
+    });
     if (value ?? false) {
       allowNavi = true;
       String homeUrl = getHomeUrl();
-      await controller.loadUrl(homeUrl);
+      await controller.loadUrl(urlRequest: URLRequest(url:WebUri(homeUrl)));
     }
   }
 
   Future<void> _onClearCookies(BuildContext context) async {
-    bool? value = await showDialog(
-        context: context,
-        builder: (context) {
-          return CustomAlertDialog(
-              msg: S.current.AppClearCookie, isNormal: true);
-        });
+    bool? value = await showDialog(context: context, builder: (context){
+      return CustomAlertDialog(msg: S.current.AppClearCookie,isNormal: true);
+    });
     if (value ?? false) {
-      final bool hadCookies = await cookieManager.clearCookies();
+      await cookieManager.deleteAllCookies();
       String message = S.current.AppLeftSideControlsLogoutSuccess;
-      if (!hadCookies) {
-        message = S.current.AppLeftSideControlsLogoutFailed;
-      }
       Fluttertoast.showToast(msg: message);
     }
   }
 
-  Future<void> _onClearCache(
-      BuildContext context, WebViewController controller) async {
-    bool? value = await showDialog(
-        context: context,
-        builder: (context) {
-          return CustomAlertDialog(
-              msg: S.current.AppClearCache.replaceAll('\n', ''),
-              isNormal: true);
-        });
+  Future<void> _onClearCache(BuildContext context, InAppWebViewController controller) async {
+    bool? value = await showDialog(context: context, builder: (context){
+      return CustomAlertDialog(msg: S.current.AppClearCache.replaceAll('\n', ''),isNormal: true);
+    });
     if (value ?? false) {
       allowNavi = true;
       await controller.clearCache();

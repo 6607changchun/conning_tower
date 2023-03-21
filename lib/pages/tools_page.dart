@@ -10,21 +10,22 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:validators/validators.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
+import '../constants.dart';
 import '../generated/l10n.dart';
 import '../helper.dart';
 import '../widgets/dailog.dart';
 import 'home.dart';
 
 class ToolsPage extends StatefulWidget {
-  ToolsPage(this._webViewControllerFuture, CookieManager? cookieManager,
+  ToolsPage(this.controller, CookieManager? cookieManager,
       {Key? key, required this.notifyParent, required this.reloadConfig})
-      : cookieManager = cookieManager ?? CookieManager(),
+      : cookieManager = cookieManager ?? CookieManager.instance(),
         super(key: key);
 
   final Function() notifyParent;
-  final Future<WebViewController> _webViewControllerFuture;
+  final Future<InAppWebViewController> controller;
   late final CookieManager cookieManager;
   final Function() reloadConfig;
 
@@ -39,18 +40,16 @@ class _ToolsPageState extends State<ToolsPage> {
   void initState() {
     _uaTextController = TextEditingController(text: customUA.isNotEmpty ? customUA : kSafariUA);
     super.initState();
-}
-
-  Future<void> _onHttpRedirect(WebViewController controller) async {
+  }
+  Future<void> _onHttpRedirect(InAppWebViewController controller) async {
     if (!inKancolleWindow) {
-      String? currentUrl = await controller.currentUrl();
+      String? currentUrl = controller.getUrl().toString();
       Uri uri = Uri.parse(currentUrl!);
       if (uri.path.startsWith('/netgame/social/-/gadgets/=/app_id=854854')) {
         // May be HTTPS or HTTP
         allowNavi = true;
         if (Platform.isIOS) {
-          await controller.runJavascript(
-              '''window.open("http:"+gadgetInfo.URL,'_blank');''');
+          await controller.injectJavascriptFileFromAsset(assetFilePath: httpRedirectJS);
         }
         inKancolleWindow = true;
       }
@@ -64,7 +63,7 @@ class _ToolsPageState extends State<ToolsPage> {
   }
 
   Future<void> _onClearCache(
-      BuildContext context, WebViewController controller) async {
+      BuildContext context, InAppWebViewController controller) async {
     bool? value = await showDialog(
         context: context,
         builder: (context) {
@@ -87,16 +86,13 @@ class _ToolsPageState extends State<ToolsPage> {
               msg: S.current.AppClearCookie, isNormal: true);
         });
     if (value ?? false) {
-      final bool hadCookies = await widget.cookieManager.clearCookies();
+      await cookieManager.deleteAllCookies();
       String message = S.current.AppLeftSideControlsLogoutSuccess;
-      if (!hadCookies) {
-        message = S.current.AppLeftSideControlsLogoutFailed;
-      }
       Fluttertoast.showToast(msg: message);
     }
   }
 
-  Future<void> _onAdjustWindow(WebViewController controller) async {
+  Future<void> _onAdjustWindow(InAppWebViewController controller) async {
     if (gameLoadCompleted) {
       await autoAdjustWindowV2(controller, force: true);
     } else {
@@ -105,16 +101,13 @@ class _ToolsPageState extends State<ToolsPage> {
     }
   }
 
-  Future<void> _onMuteGame(WebViewController controller) async {
-    await controller.runJavascript('''document.cookie=
-    "kcs_options=vol_bgm%3D0%3Bvol_se%3D0%3Bvol_voice%3D0%3Bv_be_left%3D1%3Bv_duty%3D1;expires=Thu, 1-Jan-2099 00:00:00 GMT;path=/;domain=dmm.com"
-	''');
+  Future<void> _onMuteGame(InAppWebViewController controller) async {
+    await controller.injectJavascriptFileFromAsset(assetFilePath: muteKancolleJS);
     Fluttertoast.showToast(msg: S.current.MsgMuteGame);
   }
 
-  Future<void> _onUnmuteGame(WebViewController controller) async {
-    await controller.runJavascript('''	document.cookie=
-    "kcs_options=vol_bgm%3D30%3Bvol_se%3D40%3Bvol_voice%3D60%3Bv_be_left%3D1%3Bv_duty%3D1;expires=Thu, 1-Jan-2099 00:00:00 GMT;path=/;domain=dmm.com"''');
+  Future<void> _onUnmuteGame(InAppWebViewController controller) async {
+    await controller.injectJavascriptFileFromAsset(assetFilePath: unMuteKancolleJS);
     Fluttertoast.showToast(msg: S.current.MsgUnmuteGame);
   }
 
@@ -145,13 +138,13 @@ class _ToolsPageState extends State<ToolsPage> {
           ),
           actions: [
             CupertinoDialogAction(child: Text(S.current.Cancel),
-            onPressed: (){
-              Navigator.of(context).pop(false);
-            },),
+              onPressed: (){
+                Navigator.of(context).pop(false);
+              },),
             CupertinoDialogAction(child: const Text("OK"),
-            onPressed: (){
-              Navigator.of(context).pop(true);
-            },),
+              onPressed: (){
+                Navigator.of(context).pop(true);
+              },),
           ],
         );
       },
@@ -161,10 +154,12 @@ class _ToolsPageState extends State<ToolsPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: widget._webViewControllerFuture,
+      future: widget.controller,
       builder:
-          (BuildContext context, AsyncSnapshot<WebViewController> snapshot) {
-        final WebViewController? controller = snapshot.data;
+          (BuildContext context, AsyncSnapshot<InAppWebViewController> snapshot) {
+        final bool webViewReady =
+            snapshot.connectionState == ConnectionState.done;
+        final InAppWebViewController? controller = snapshot.data;
         return NestedScrollView(
           headerSliverBuilder: (context, bool innerBoxIsScrolled) {
             return [

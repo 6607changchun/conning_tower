@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 1.4.1+1
+version: 1.5.0+1
 
 
 environment:
@@ -38,7 +38,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  webview_flutter: ^3.0.4
+  flutter_inappwebview: ^6.0.0-beta.22
   path_provider: ^2.0.11
   fluttertoast: ^8.1.1
   shared_preferences: ^2.0.15
@@ -82,6 +82,13 @@ flutter:
     - assets/images/defaultAvatarImage.png
     - assets/config/sentry
     - assets/www/home.html
+    - assets/js/httpRedirect.js
+    - assets/js/autoScaleAndroid.js
+    - assets/js/autoScaleIOS.js
+    - assets/js/muteKancolle.js
+    - assets/js/unMuteKancolle.js
+
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

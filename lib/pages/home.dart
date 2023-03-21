@@ -7,6 +7,7 @@ import 'package:conning_tower/main.dart';
 import 'package:conning_tower/pages/about_page.dart';
 import 'package:conning_tower/pages/settings_page.dart';
 import 'package:conning_tower/pages/tools_page.dart';
+import 'package:conning_tower/pages/gameinfo_page.dart';
 import 'package:conning_tower/widgets/controls.dart';
 import 'package:conning_tower/widgets/dailog.dart';
 import 'package:conning_tower/widgets/fade_indexed_stack.dart';
@@ -14,8 +15,9 @@ import 'package:conning_tower/widgets/kcwebview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants.dart';
 import '../generated/l10n.dart';
@@ -23,6 +25,7 @@ import '../generated/l10n.dart';
 late bool allowNavi;
 late bool autoAdjusted;
 late bool bottomPadding;
+late bool enableAutoScale;
 late bool gameLoadCompleted;
 late bool inKancolleWindow;
 late bool beforeRedirect;
@@ -50,8 +53,8 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
+  final Completer<InAppWebViewController> _controller =
+  Completer<InAppWebViewController>();
   late double deviceWidth;
   late Alignment fabAlignment;
   bool _showNotify = true;
@@ -80,6 +83,7 @@ class HomePageState extends State<HomePage> {
     customHomeBase64 = '';
     customUA = '';
     enableAutoProcess = true;
+    enableAutoScale = enableAutoProcess;
     customHomeBase64Url = '';
     loadedDMM = true;
     enableHideFAB = false;
@@ -285,6 +289,7 @@ class HomePageState extends State<HomePage> {
                     AboutPage(
                       packageInfo: _packageInfo,
                     ),
+                    GameInfoPage(),
                   ],
                 ),
               ),
