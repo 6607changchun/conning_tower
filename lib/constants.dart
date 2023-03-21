@@ -144,7 +144,25 @@ const String kHome = """
 <body>
 <div class="form-group">
     <input id="url" class="form-field" type="text" value="$kGoogle">
-    <span onclick="const url = document.getElementById('url').value;window.open(url, '_blank');">⏎</span>
+    <span onclick="
+    let url = document.getElementById('url').value;
+    if(url.substring(0,7).toLowerCase() !== 'http://' || url.substring(0,8).toLowerCase() !== 'https://') url = 'http://' + url;
+    window.open(url, '_blank');">⏎</span>
+    <script>
+        const input = document.querySelector('#url');
+
+        input.addEventListener('keydown', (event) => {
+            if (event.keyCode === 13) {
+                let url = document.getElementById('url').value;
+                if(url.substring(0,7).toLowerCase() === "http://" || url.substring(0,8).toLowerCase() === "https://"){
+                    window.open(url, '_blank');
+                }else{
+                    url = "http://" + url;
+                    window.open(url, '_blank');
+                }
+            }
+        });
+    </script>
 </div>
 </body>
 </html>
