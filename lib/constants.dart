@@ -144,22 +144,24 @@ const String kHome = """
 <body>
 <div class="form-group">
     <input id="url" class="form-field" type="text" value="$kGoogle">
-    <span onclick="
-    let url = document.getElementById('url').value;
-    if(url.substring(0,7).toLowerCase() !== 'http://' || url.substring(0,8).toLowerCase() !== 'https://') url = 'http://' + url;
-    window.open(url, '_blank');">⏎</span>
+    
+    <span onclick="go()">⏎</span>
     <script>
         const input = document.querySelector('#url');
 
+        function go() {
+            let url = document.getElementById('url').value;
+            if(url.substring(0,7).toLowerCase() === "http://" || url.substring(0,8).toLowerCase() === "https://"){
+                window.open(url, '_blank');
+            }else{
+                url = "http://" + url;
+                window.open(url, '_blank');
+            }
+        }
+
         input.addEventListener('keypress', (event) => {
             if (event.keyCode === 13) {
-                let url = document.getElementById('url').value;
-                if(url.substring(0,7).toLowerCase() === "http://" || url.substring(0,8).toLowerCase() === "https://"){
-                    window.open(url, '_blank');
-                }else{
-                    url = "http://" + url;
-                    window.open(url, '_blank');
-                }
+                go();
             }
         });
     </script>
