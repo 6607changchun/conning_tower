@@ -104,8 +104,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Enable Auto Fullscreen"),
         "SettingsHideFAB":
             MessageLookupByLibrary.simpleMessage("Hide Floating Action Button"),
-        "SettingsHomeLoad":
-            MessageLookupByLibrary.simpleMessage("Auto Open game on Launch"),
+        "SettingsHomeLoad": MessageLookupByLibrary.simpleMessage(
+            "Auto Open Search Bar URL on Launch"),
         "SettingsHomeSave": MessageLookupByLibrary.simpleMessage(
             "Make Current Web Page as Home"),
         "SettingsLockDeviceOrientation":
@@ -113,6 +113,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "SettingsLockDeviceOrientationTip":
             MessageLookupByLibrary.simpleMessage("Not Available for iPad"),
         "SettingsReset": MessageLookupByLibrary.simpleMessage("Reset App"),
+        "ToolSearchBarURLSetting":
+            MessageLookupByLibrary.simpleMessage("Set Search Bar URL"),
         "ToolTitleGameScreen":
             MessageLookupByLibrary.simpleMessage("WebView Screen"),
         "ToolTitleGameSound":
