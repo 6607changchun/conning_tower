@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:validators/validators.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -34,12 +33,14 @@ class ToolsPage extends StatefulWidget {
 
 class _ToolsPageState extends State<ToolsPage> {
   late TextEditingController _uaTextController;
+  late TextEditingController _urlTextController;
 
   @override
   void initState() {
     _uaTextController = TextEditingController(text: customUA.isNotEmpty ? customUA : kSafariUA);
+    _urlTextController = TextEditingController(text: customHomeBase64Url.isNotEmpty ? customHomeBase64Url : '');
     super.initState();
-}
+  }
 
   Future<void> _onHttpRedirect(WebViewController controller) async {
     if (!inKancolleWindow) {
@@ -121,37 +122,42 @@ class _ToolsPageState extends State<ToolsPage> {
   Future<void> _onHomeSave(WebViewController controller) async {
     final String? curUrl = await controller.currentUrl();
     if (isURL(curUrl)) {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = localStorage;
       if (curUrl == customHomeUrl) {
         prefs.setString('customHomeUrl', '');
       } else {
         prefs.setString('customHomeUrl', curUrl!);
       }
-      prefs.setString('customHomeBase64Url', curUrl!);
-      customHomeBase64Url = curUrl;
+      // prefs.setString('customHomeBase64Url', curUrl!);
+      // customHomeBase64Url = curUrl;
       widget.reloadConfig();
     }
   }
 
-  Future _showDialogWithInput() async {
+  Future _showDialogWithInput(
+      String title, TextEditingController controller) async {
     return showCupertinoDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: Text(S.current.ToolUATip),
+          title: Text(title),
           content: CupertinoTextField(
-            controller: _uaTextController,
+            controller: controller,
           ),
           actions: [
-            CupertinoDialogAction(child: Text(S.current.Cancel),
-            onPressed: (){
-              Navigator.of(context).pop(false);
-            },),
-            CupertinoDialogAction(child: const Text("OK"),
-            onPressed: (){
-              Navigator.of(context).pop(true);
-            },),
+            CupertinoDialogAction(
+              child: Text(S.current.Cancel),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            CupertinoDialogAction(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
           ],
         );
       },
@@ -186,12 +192,29 @@ class _ToolsPageState extends State<ToolsPage> {
                       leading: const Icon(FontAwesomeIcons.safari),
                       onPressed: (context) async {
                         var value = _uaTextController.value;
-                        bool flag = await _showDialogWithInput();
-                        if(!flag) {
+                        bool flag = await _showDialogWithInput(
+                            S.current.ToolUATip, _uaTextController);
+                        if (!flag) {
                           _uaTextController.value = value;
-                        }else{
+                        } else {
                           customUA = _uaTextController.value.text;
                           localStorage.setString("customUA", customUA);
+                        }
+                      },
+                    ),
+                    SettingsTile.navigation(
+                      title: Text(S.of(context).ToolSearchBarURLSetting),
+                      leading: const Icon(CupertinoIcons.home),
+                      onPressed: (context) async {
+                        var value = _urlTextController.value;
+                        bool flag = await _showDialogWithInput(
+                            S.current.ToolUATip, _urlTextController);
+                        if (!flag) {
+                          _urlTextController.value = value;
+                        } else {
+                          customHomeBase64Url = _urlTextController.value.text;
+                          localStorage.setString(
+                              "customHomeBase64Url", customHomeBase64Url);
                         }
                       },
                     ),
@@ -274,8 +297,7 @@ class _ToolsPageState extends State<ToolsPage> {
                         setState(() {
                           bottomPadding = value;
                         });
-                        final prefs = await SharedPreferences.getInstance();
-                        prefs.setBool('bottomPadding', value);
+                        localStorage.setBool('bottomPadding', value);
                         widget.reloadConfig();
                         widget.notifyParent();
                       },

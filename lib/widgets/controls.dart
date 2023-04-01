@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../generated/l10n.dart';
@@ -246,6 +245,7 @@ class Controls extends StatelessWidget {
 
   Future<void> _onGoBack(WebViewController controller) async {
     allowNavi = true;
+    safeNavi = true;
     if (await controller.canGoBack()) {
       await controller.goBack();
     }
@@ -253,6 +253,7 @@ class Controls extends StatelessWidget {
 
   Future<void> _onGoForward(WebViewController controller) async {
     allowNavi = true;
+    safeNavi = true;
     if (await controller.canGoForward()) {
       await controller.goForward();
     }
@@ -341,8 +342,6 @@ class Controls extends StatelessWidget {
     if (value ?? false) {
       allowNavi = true;
       await controller.clearCache();
-      final prefs = await SharedPreferences.getInstance(); //temporarily
-      prefs.clear(); //temporarily
       Fluttertoast.showToast(msg: S.current.AppLeftSideControlsClearCache);
     }
   }

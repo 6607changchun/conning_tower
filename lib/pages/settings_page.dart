@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../generated/l10n.dart';
 
@@ -19,7 +18,7 @@ class SettingsPage extends StatefulWidget {
 
 class SettingsPageState extends State<SettingsPage> {
   bool enableAutoProcessSwitchValue = true;
-  bool enableAutLoadKCSwitchValue = false;
+  bool enableAutLoadSearchBarUrlSwitchValue = false;
 
   @override
   void initState() {
@@ -32,7 +31,7 @@ class SettingsPageState extends State<SettingsPage> {
     setState(() {
       enableAutoProcessSwitchValue =
           (prefs.getBool('enableAutoProcess') ?? true);
-      enableAutLoadKCSwitchValue = (prefs.getBool('enableAutLoadKC') ?? false);
+      enableAutLoadSearchBarUrlSwitchValue = (prefs.getBool('enableAutLoadSearchBarUrl') ?? false);
     });
   }
 
@@ -55,8 +54,8 @@ class SettingsPageState extends State<SettingsPage> {
             SettingsSection(
               title: Text(S.of(context).AppName),
               tiles: <SettingsTile>[
-                if(loadedDMM) SettingsTile.switchTile(
-                  initialValue: enableAutLoadKCSwitchValue,
+                SettingsTile.switchTile(
+                  initialValue: enableAutLoadSearchBarUrlSwitchValue,
                   leading: const Icon(
                     CupertinoIcons.home,
                   ),
@@ -64,10 +63,9 @@ class SettingsPageState extends State<SettingsPage> {
                   onToggle: (value) async {
                     HapticFeedback.heavyImpact();
                     setState(() {
-                      enableAutLoadKCSwitchValue = value;
+                      enableAutLoadSearchBarUrlSwitchValue = value;
                     });
-                    final prefs = await SharedPreferences.getInstance();
-                    prefs.setBool('enableAutLoadKC', value);
+                    localStorage.setBool('enableAutLoadSearchBarUrl', value);
                     widget.reloadConfig();
                   },
                 ),

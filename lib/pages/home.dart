@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:circular_menu/circular_menu.dart';
@@ -15,12 +16,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:validators/validators.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../constants.dart';
 import '../generated/l10n.dart';
 
 late bool allowNavi;
+late bool safeNavi;
 late bool autoAdjusted;
 late bool bottomPadding;
 late bool gameLoadCompleted;
@@ -33,7 +36,7 @@ late Uri home;
 late bool enableAutoProcess;
 late String customHomeBase64;
 late String customHomeBase64Url;
-late bool enableAutLoadKC;
+late bool enableAutLoadSearchBarUrl;
 late String customHomeUrl;
 late String customUA;
 late bool loadedDMM;
@@ -73,9 +76,10 @@ class HomePageState extends State<HomePage> {
     kWebviewHeight = 0.0;
     kWebviewWidth = 0.0;
     allowNavi = true;
+    safeNavi = false;
     bottomPadding = false;
     selectedIndex = 0;
-    enableAutLoadKC = false;
+    enableAutLoadSearchBarUrl = false;
     customHomeUrl = '';
     customHomeBase64 = '';
     customUA = '';
@@ -86,6 +90,13 @@ class HomePageState extends State<HomePage> {
     home = Uri.parse(kGameUrl);
 
     _loadConfig();
+
+    if (isURL(customHomeBase64Url)) {
+      debugPrint('getHomeUrl:$customHomeBase64Url');
+      customHomeBase64 = base64Encode(const Utf8Encoder()
+          .convert(kHome.replaceFirst("value=''>", "value='$customHomeBase64Url'>")));
+      kHomeBase64 = customHomeBase64;
+    }
 
     SystemChrome.setPreferredOrientations(
         getDeviceOrientation(customDeviceOrientationIndex));
@@ -119,7 +130,7 @@ class HomePageState extends State<HomePage> {
       _showIosNotify = (prefs.getBool('showIosNotify') ?? true);
       enableAutoProcess = (prefs.getBool('enableAutoProcess') ?? true);
       bottomPadding = (prefs.getBool('bottomPadding') ?? false);
-      enableAutLoadKC = (prefs.getBool('enableAutLoadKC') ?? false);
+      enableAutLoadSearchBarUrl = (prefs.getBool('enableAutLoadSearchBarUrl') ?? false);
       customHomeUrl = (prefs.getString('customHomeUrl') ?? '');
       customHomeBase64Url = (prefs.getString('customHomeBase64Url') ?? '');
       loadedDMM = (prefs.getBool('loadedDMM') ?? false);

@@ -34,7 +34,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "AboutContributors":
             MessageLookupByLibrary.simpleMessage("Contributors"),
         "AboutDescription": MessageLookupByLibrary.simpleMessage(
-            "ConningTower for iOS is a browser for browser games that allows you to customize your screen and always stay in landscape in desktop view."),
+            "ConningTower for iOS is a browser designed specifically for playing browser games. It lets you customize your screen and stay in landscape mode with desktop view at all times."),
         "AboutVersion": MessageLookupByLibrary.simpleMessage("Version"),
         "AlertNotShowAgain":
             MessageLookupByLibrary.simpleMessage("Don\'t show again"),
@@ -60,7 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Scroll up"),
         "AppName": MessageLookupByLibrary.simpleMessage("Conning Tower"),
         "AppNotify": MessageLookupByLibrary.simpleMessage(
-            "Admiral, welcome to the bridge, the bridge will make the Kancolle interface automatically full screen, if you see the top bar of DMM GAMES for a long time, please click the \'Tools-Web-HTTP Redirect\' button before you command."),
+            "Admiral, welcome to the bridge, the bridge will make the game interface automatically full screen, if you see the top bar of DMM GAMES for a long time, please click the \'Tools-Web-HTTP Redirect\' button before you command."),
         "AppRedirect": MessageLookupByLibrary.simpleMessage("HTTP Redirect"),
         "AppRefresh": MessageLookupByLibrary.simpleMessage("Refresh"),
         "AppResize":
@@ -105,7 +105,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "SettingsHideFAB":
             MessageLookupByLibrary.simpleMessage("Hide Floating Action Button"),
         "SettingsHomeLoad": MessageLookupByLibrary.simpleMessage(
-            "Auto Open KanColle on Launch"),
+            "Auto Open Search Bar URL on Launch"),
         "SettingsHomeSave": MessageLookupByLibrary.simpleMessage(
             "Make Current Web Page as Home"),
         "SettingsLockDeviceOrientation":
@@ -113,6 +113,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "SettingsLockDeviceOrientationTip":
             MessageLookupByLibrary.simpleMessage("Not Available for iPad"),
         "SettingsReset": MessageLookupByLibrary.simpleMessage("Reset App"),
+        "ToolSearchBarURLSetting":
+            MessageLookupByLibrary.simpleMessage("Set Search Bar URL"),
         "ToolTitleGameScreen":
             MessageLookupByLibrary.simpleMessage("WebView Screen"),
         "ToolTitleGameSound":
