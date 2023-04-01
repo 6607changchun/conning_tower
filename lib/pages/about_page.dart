@@ -130,7 +130,7 @@ class AboutPage extends StatelessWidget {
                         children: const [
                           Text('AndyChu'),
                           Text('Angus'),
-                          Text('lovetwice1012'),
+                          Text('naayu'),
                         ],
                       ),
                     ),

@@ -57,7 +57,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("向上滚动"),
         "AppName": MessageLookupByLibrary.simpleMessage("舰桥"),
         "AppNotify": MessageLookupByLibrary.simpleMessage(
-            "提督，欢迎来到舰桥，舰桥会在Kancolle界面加载完成后自动调整屏幕尺寸到合适大小，如果长时间看到DMM GAMES的顶栏存在，请在你指挥舰队前点击「工具-Web-HTTP跳转」。"),
+            "提督，欢迎来到舰桥，舰桥会在游戏界面加载完成后自动调整屏幕尺寸到合适大小，如果长时间看到DMM GAMES的顶栏存在，请在你指挥舰队前点击「工具-Web-HTTP跳转」。"),
         "AppRedirect": MessageLookupByLibrary.simpleMessage("HTTP跳转"),
         "AppRefresh": MessageLookupByLibrary.simpleMessage("刷新"),
         "AppResize": MessageLookupByLibrary.simpleMessage("调整尺寸至适合屏幕"),
@@ -97,8 +97,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "SettingsEnableAutoProcess":
             MessageLookupByLibrary.simpleMessage("启用自动全屏"),
         "SettingsHideFAB": MessageLookupByLibrary.simpleMessage("隐藏浮动按钮"),
-        "SettingsHomeLoad":
-            MessageLookupByLibrary.simpleMessage("启动时自动打开「艦これ」"),
+        "SettingsHomeLoad": MessageLookupByLibrary.simpleMessage("启动时自动打开游戏"),
         "SettingsHomeSave": MessageLookupByLibrary.simpleMessage("将当前网页设置为主页"),
         "SettingsLockDeviceOrientation":
             MessageLookupByLibrary.simpleMessage("锁定屏幕方向"),

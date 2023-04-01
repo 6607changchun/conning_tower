@@ -60,7 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Scroll up"),
         "AppName": MessageLookupByLibrary.simpleMessage("Conning Tower"),
         "AppNotify": MessageLookupByLibrary.simpleMessage(
-            "Admiral, welcome to the bridge, the bridge will make the Kancolle interface automatically full screen, if you see the top bar of DMM GAMES for a long time, please click the \'Tools-Web-HTTP Redirect\' button before you command."),
+            "Admiral, welcome to the bridge, the bridge will make the game interface automatically full screen, if you see the top bar of DMM GAMES for a long time, please click the \'Tools-Web-HTTP Redirect\' button before you command."),
         "AppRedirect": MessageLookupByLibrary.simpleMessage("HTTP Redirect"),
         "AppRefresh": MessageLookupByLibrary.simpleMessage("Refresh"),
         "AppResize":
@@ -104,8 +104,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Enable Auto Fullscreen"),
         "SettingsHideFAB":
             MessageLookupByLibrary.simpleMessage("Hide Floating Action Button"),
-        "SettingsHomeLoad": MessageLookupByLibrary.simpleMessage(
-            "Auto Open KanColle on Launch"),
+        "SettingsHomeLoad":
+            MessageLookupByLibrary.simpleMessage("Auto Open game on Launch"),
         "SettingsHomeSave": MessageLookupByLibrary.simpleMessage(
             "Make Current Web Page as Home"),
         "SettingsLockDeviceOrientation":

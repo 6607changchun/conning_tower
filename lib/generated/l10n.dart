@@ -140,10 +140,10 @@ class S {
     );
   }
 
-  /// `Admiral, welcome to the bridge, the bridge will make the Kancolle interface automatically full screen, if you see the top bar of DMM GAMES for a long time, please click the 'Tools-Web-HTTP Redirect' button before you command.`
+  /// `Admiral, welcome to the bridge, the bridge will make the game interface automatically full screen, if you see the top bar of DMM GAMES for a long time, please click the 'Tools-Web-HTTP Redirect' button before you command.`
   String get AppNotify {
     return Intl.message(
-      'Admiral, welcome to the bridge, the bridge will make the Kancolle interface automatically full screen, if you see the top bar of DMM GAMES for a long time, please click the \'Tools-Web-HTTP Redirect\' button before you command.',
+      'Admiral, welcome to the bridge, the bridge will make the game interface automatically full screen, if you see the top bar of DMM GAMES for a long time, please click the \'Tools-Web-HTTP Redirect\' button before you command.',
       name: 'AppNotify',
       desc: '',
       args: [],
@@ -340,10 +340,10 @@ class S {
     );
   }
 
-  /// `Auto Open KanColle on Launch`
+  /// `Auto Open game on Launch`
   String get SettingsHomeLoad {
     return Intl.message(
-      'Auto Open KanColle on Launch',
+      'Auto Open game on Launch',
       name: 'SettingsHomeLoad',
       desc: '',
       args: [],
